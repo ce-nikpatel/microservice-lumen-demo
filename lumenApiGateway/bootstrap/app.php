@@ -27,6 +27,10 @@ $app->withFacades();
 
 $app->withEloquent();
 
+/* register config files */
+$app->configure('services');
+$app->configure('auth');
+
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -72,13 +76,14 @@ $app->configure('app');
 |
 */
 
-$app->middleware([
-    App\Http\Middleware\AuthenticateAccess::class
-]);
-
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
+// $app->middleware([
+//     App\Http\Middleware\ExampleMiddleware::class
 // ]);
+
+$app->routeMiddleware([
+    // 'auth' => App\Http\Middleware\Authenticate::class,
+    'client.credentials' => Laravel\Passport\Http\Middleware\CheckClientCredentials::class
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -92,9 +97,11 @@ $app->middleware([
 */
 
 // $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
+$app->register(App\Providers\AuthServiceProvider::class);
+$app->register(Laravel\Passport\PassportServiceProvider::class);
+$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
